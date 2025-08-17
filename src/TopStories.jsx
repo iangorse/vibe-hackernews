@@ -77,6 +77,8 @@ function TopStories() {
     });
     const comments = await Promise.all(commentPromises);
     allCommentsCache[story.id] = comments;
+    // Force re-render so Accordion shows comments
+    setExpanded(prev => ({ ...prev }));
   };
 
   return (
