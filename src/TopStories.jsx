@@ -12,6 +12,7 @@ const HN_ITEM_URL = 'https://hacker-news.firebaseio.com/v0/item';
 
 // Simple in-memory cache for story details
 const storyCache = {};
+const commentCache = {};
 
 function TopStories() {
   const [stories, setStories] = useState([]);
@@ -25,14 +26,25 @@ function TopStories() {
         const ids = await res.json();
         const top10 = ids.slice(0, 10);
         const storyPromises = top10.map(async id => {
-          if (storyCache[id]) {
-            return storyCache[id];
-          } else {
+          let story = storyCache[id];
+          if (!story) {
             const resp = await fetch(`${HN_ITEM_URL}/${id}.json`);
-            const data = await resp.json();
-            storyCache[id] = data;
-            return data;
+            story = await resp.json();
+            storyCache[id] = story;
           }
+          // Fetch top comment if exists
+          let topComment = null;
+          if (story.kids && story.kids.length > 0) {
+            const commentId = story.kids[0];
+            if (commentCache[commentId]) {
+              topComment = commentCache[commentId];
+            } else {
+              const commentResp = await fetch(`${HN_ITEM_URL}/${commentId}.json`);
+              topComment = await commentResp.json();
+              commentCache[commentId] = topComment;
+            }
+          }
+          return { ...story, topComment };
         });
         const storiesData = await Promise.all(storyPromises);
         setStories(storiesData);
@@ -59,14 +71,27 @@ function TopStories() {
       </Typography>
       <List>
         {stories.map(story => (
-          <ListItem key={story.id} divider>
+          <ListItem key={story.id} divider alignItems="flex-start">
             <ListItemText
               primary={
                 <Link href={story.url} target="_blank" rel="noopener noreferrer" underline="hover">
                   {story.title}
                 </Link>
               }
-              secondary={`by ${story.by}`}
+              secondary={
+                <>
+                  <span>by {story.by}</span>
+                  {story.topComment && (
+                    <div style={{ marginTop: 8, padding: 8, background: '#f5f5f5', borderRadius: 4 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        <span dangerouslySetInnerHTML={{ __html: story.topComment.text }} />
+                        <br />
+                        <span style={{ fontStyle: 'italic', color: '#888' }}>— {story.topComment.by}</span>
+                      </Typography>
+                    </div>
+                  )}
+                </>
+              }
             />
           </ListItem>
         ))}
