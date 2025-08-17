@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Link from '@mui/material/Link';
 
 const HN_TOP_STORIES_URL = 'https://hacker-news.firebaseio.com/v0/topstories.json';
 const HN_ITEM_URL = 'https://hacker-news.firebaseio.com/v0/item';
@@ -38,22 +44,34 @@ function TopStories() {
     fetchStories();
   }, []);
 
-  if (loading) return <div>Loading top stories...</div>;
+  if (loading) return (
+    <Container maxWidth="sm">
+      <Typography variant="h6" align="center" sx={{ mt: 4 }}>
+        Loading top stories...
+      </Typography>
+    </Container>
+  );
 
   return (
-    <div>
-      <h2>Hacker News Top Stories</h2>
-      <ul>
+    <Container maxWidth="sm">
+      <Typography variant="h4" align="center" sx={{ mt: 4, mb: 2 }}>
+        Hacker News Top Stories
+      </Typography>
+      <List>
         {stories.map(story => (
-          <li key={story.id}>
-            <a href={story.url} target="_blank" rel="noopener noreferrer">
-              {story.title}
-            </a>
-            <span> by {story.by}</span>
-          </li>
+          <ListItem key={story.id} divider>
+            <ListItemText
+              primary={
+                <Link href={story.url} target="_blank" rel="noopener noreferrer" underline="hover">
+                  {story.title}
+                </Link>
+              }
+              secondary={`by ${story.by}`}
+            />
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Container>
   );
 }
 
