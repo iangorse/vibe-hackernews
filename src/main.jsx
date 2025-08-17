@@ -4,24 +4,30 @@ import './index.css';
 import App from './App.jsx';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import getTheme from './theme';
+import { classicLight, freshLight, darkTheme } from './theme';
 import { useState } from 'react';
 
 function Main() {
   const getInitialMode = () => {
     const saved = window.localStorage.getItem('themeMode');
-    return saved === 'dark' ? 'dark' : 'light';
+    if (saved === 'dark' || saved === 'classic' || saved === 'fresh') return saved;
+    return 'classic';
   };
-  const [mode, setMode] = useState(getInitialMode);
+  const [mode, setMode] = useState(getInitialMode());
 
   const handleSetMode = (newMode) => {
     setMode(newMode);
     window.localStorage.setItem('themeMode', newMode);
   };
 
+  const theme =
+    mode === 'dark' ? darkTheme :
+    mode === 'fresh' ? freshLight :
+    classicLight;
+
   return (
     <StrictMode>
-      <ThemeProvider theme={getTheme(mode)}>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
         <App mode={mode} setMode={handleSetMode} />
       </ThemeProvider>
