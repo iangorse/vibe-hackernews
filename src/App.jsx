@@ -46,6 +46,7 @@ function App({ mode, setMode }) {
         anchorEl={anchorEl}
         open={menuOpen}
         onClose={handleMenuClose}
+        disableScrollLock
       >
         <MenuItem disabled>Theme</MenuItem>
         <MenuItem selected={mode === 'classic'} onClick={() => handleThemeChange('classic')}>Classic Light</MenuItem>
