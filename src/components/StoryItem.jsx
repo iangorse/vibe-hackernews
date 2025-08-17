@@ -18,44 +18,40 @@ function StoryItem({ story, expanded, setExpanded, allCommentsCache, commentCach
   };
 
   return (
-    <ListItem key={story.id} divider alignItems="flex-start" sx={{ width: '100%' }}>
+    <ListItem key={story.id} divider alignItems="flex-start" sx={{ width: '100%', display: 'block' }}>
       <ListItemText
         primary={
           <Link href={story.url} target="_blank" rel="noopener noreferrer" underline="hover">
             {story.title}
           </Link>
         }
-        secondary={
-          <>
-            <span>by {story.by}</span>
-            {story.topComment && (
-              <Comment comment={story.topComment} />
-            )}
-            {/* Dropdown for more comments */}
-            {story.kids && story.kids.length > 1 && (
-              <Accordion
-                expanded={!!expanded[story.id]}
-                onChange={handleAccordionChange}
-                sx={{ mt: 2, width: '100%' }}
-              >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ width: '100%' }}>
-                  <Typography variant="body2" color="primary">
-                    Show {story.kids.length - 1} more comment{story.kids.length - 1 > 1 ? 's' : ''}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails sx={{ width: '100%' }}>
-                  {allCommentsCache[story.id]
-                    ? allCommentsCache[story.id].map(comment => (
-                        <Comment key={comment.id} comment={comment} />
-                      ))
-                    : <Typography variant="body2">Loading comments...</Typography>
-                  }
-                </AccordionDetails>
-              </Accordion>
-            )}
-          </>
-        }
+        secondary={<span>by {story.by}</span>}
       />
+      {story.topComment && (
+        <Comment comment={story.topComment} />
+      )}
+      {/* Dropdown for more comments */}
+      {story.kids && story.kids.length > 1 && (
+        <Accordion
+          expanded={!!expanded[story.id]}
+          onChange={handleAccordionChange}
+          sx={{ mt: 2, width: '100%' }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ width: '100%' }}>
+            <Typography variant="body2" color="primary">
+              Show {story.kids.length - 1} more comment{story.kids.length - 1 > 1 ? 's' : ''}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ width: '100%' }}>
+            {allCommentsCache[story.id]
+              ? allCommentsCache[story.id].map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))
+              : <Typography variant="body2">Loading comments...</Typography>
+            }
+          </AccordionDetails>
+        </Accordion>
+      )}
     </ListItem>
   );
 }

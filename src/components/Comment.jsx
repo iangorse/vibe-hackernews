@@ -21,22 +21,18 @@ function Comment({ comment, variant = 'body2', style = {}, level = 0 }) {
   const handleExpand = async (event, isExpanded) => {
     setExpanded(isExpanded);
     if (isExpanded && comment.kids && comment.kids.length > 0) {
-      if (!childCommentCache[comment.id]) {
-        setLoading(true);
-        const promises = comment.kids.map(async cid => {
-          if (childCommentCache[cid]) return childCommentCache[cid];
-          const resp = await fetch(`https://hacker-news.firebaseio.com/v0/item/${cid}.json`);
-          const data = await resp.json();
-          childCommentCache[cid] = data;
-          return data;
-        });
-        const children = await Promise.all(promises);
-        childCommentCache[comment.id] = children;
-        setChildComments(children);
-        setLoading(false);
-      } else {
-        setChildComments(childCommentCache[comment.id]);
-      }
+      setLoading(true);
+      const promises = comment.kids.map(async cid => {
+        if (childCommentCache[cid]) return childCommentCache[cid];
+        const resp = await fetch(`https://hacker-news.firebaseio.com/v0/item/${cid}.json`);
+        const data = await resp.json();
+        childCommentCache[cid] = data;
+        return data;
+      });
+      const children = await Promise.all(promises);
+      childCommentCache[comment.id] = children;
+      setChildComments(children);
+      setLoading(false);
     }
   };
 
@@ -65,9 +61,10 @@ function Comment({ comment, variant = 'body2', style = {}, level = 0 }) {
       {level > 0 && (
         <span style={{ fontSize: 12, color: borderColor, fontWeight: 500, marginBottom: 4, display: 'block' }}>Reply</span>
       )}
-      <Typography variant={variant} color="text.secondary">
+      <Typography variant={variant} color="text.secondary" component="div">
         <span dangerouslySetInnerHTML={{ __html: comment.text }} />
-        <br />
+      </Typography>
+      <Typography variant={variant} color="text.secondary" component="div">
         <span style={{ fontStyle: 'italic', color: theme.palette.text.secondary }}>— {comment.by}</span>
       </Typography>
       {comment.kids && comment.kids.length > 0 && (
