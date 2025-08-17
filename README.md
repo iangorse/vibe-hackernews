@@ -1,7 +1,8 @@
 # Vibe Hacker News
 
-A modern, responsive Hacker News client built with React and Vite. Features include:
+A modern, responsive Hacker News client for viewing and exploring top stories and comments.
 
+## Features
 - Top stories from Hacker News
 - View top comment for each story
 - Expand to view all comments and nested replies
@@ -12,7 +13,6 @@ A modern, responsive Hacker News client built with React and Vite. Features incl
 - Ready for deployment to GitHub Pages
 
 ## Getting Started
-
 1. **Install dependencies:**
 	```sh
 	npm install
