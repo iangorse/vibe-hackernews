@@ -10,6 +10,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
+import { useTheme } from '@mui/material/styles';
 
 const HN_TOP_STORIES_URL = 'https://hacker-news.firebaseio.com/v0/topstories.json';
 const HN_ITEM_URL = 'https://hacker-news.firebaseio.com/v0/item';
@@ -24,6 +25,7 @@ function TopStories() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState({}); // Track which story is expanded
+  const theme = useTheme();
 
   useEffect(() => {
     async function fetchStories() {
@@ -89,11 +91,20 @@ function TopStories() {
                 <>
                   <span>by {story.by}</span>
                   {story.topComment && (
-                    <div style={{ marginTop: 8, padding: 8, background: '#f5f5f5', borderRadius: 4, width: '100%' }}>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        padding: 8,
+                        background: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#f5f5f5',
+                        borderRadius: 4,
+                        width: '100%',
+                        color: theme.palette.text.primary,
+                      }}
+                    >
                       <Typography variant="body2" color="text.secondary">
                         <span dangerouslySetInnerHTML={{ __html: story.topComment.text }} />
                         <br />
-                        <span style={{ fontStyle: 'italic', color: '#888' }}>— {story.topComment.by}</span>
+                        <span style={{ fontStyle: 'italic', color: theme.palette.text.secondary }}>— {story.topComment.by}</span>
                       </Typography>
                       {/* Dropdown for more comments */}
                       {story.kids && story.kids.length > 1 && (
@@ -127,11 +138,21 @@ function TopStories() {
                           <AccordionDetails sx={{ width: '100%' }}>
                             {allCommentsCache[story.id]
                               ? allCommentsCache[story.id].map(comment => (
-                                  <div key={comment.id} style={{ marginBottom: 12, padding: 8, background: '#fafafa', borderRadius: 4, width: '100%' }}>
+                                  <div
+                                    key={comment.id}
+                                    style={{
+                                      marginBottom: 12,
+                                      padding: 8,
+                                      background: theme.palette.mode === 'dark' ? theme.palette.action.hover : '#fafafa',
+                                      borderRadius: 4,
+                                      width: '100%',
+                                      color: theme.palette.text.primary,
+                                    }}
+                                  >
                                     <Typography variant="body2" color="text.secondary">
                                       <span dangerouslySetInnerHTML={{ __html: comment.text }} />
                                       <br />
-                                      <span style={{ fontStyle: 'italic', color: '#888' }}>— {comment.by}</span>
+                                      <span style={{ fontStyle: 'italic', color: theme.palette.text.secondary }}>— {comment.by}</span>
                                     </Typography>
                                   </div>
                                 ))
