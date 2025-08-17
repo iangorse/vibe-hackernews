@@ -36,6 +36,10 @@ A modern, responsive Hacker News client for viewing and exploring top stories an
 
 ## License
 MIT
+
+---
+
+**Note:** The entire application was built using an AI agent (GitHub Copilot).
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
