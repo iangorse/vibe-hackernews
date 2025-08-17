@@ -1,3 +1,38 @@
+const lavenderLight = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#a18aff', // soft purple
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#b39ddb', // muted lavender
+      contrastText: '#fff',
+    },
+    background: {
+      default: '#f3f0fa', // very light lavender
+      paper: '#ede7f6', // light purple-gray
+    },
+    text: {
+      primary: '#3c3c4c',
+      secondary: '#7c7c8c',
+    },
+    action: {
+      hover: '#e1bee7',
+    },
+    divider: '#d1c4e9',
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+    h4: {
+      fontWeight: 700,
+      color: '#a18aff',
+    },
+  },
+  shape: {
+    borderRadius: 10,
+  },
+});
 import { createTheme } from '@mui/material/styles';
 
 const classicLight = createTheme({
@@ -108,4 +143,4 @@ const darkTheme = createTheme({
   },
 });
 
-export { classicLight, freshLight, darkTheme };
+export { classicLight, freshLight, darkTheme, lavenderLight };

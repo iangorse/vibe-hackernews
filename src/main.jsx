@@ -4,14 +4,14 @@ import './index.css';
 import App from './App.jsx';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { classicLight, freshLight, darkTheme } from './theme';
+import { classicLight, freshLight, darkTheme, lavenderLight } from './theme';
 import { useState } from 'react';
 
 function Main() {
   const getInitialMode = () => {
     const saved = window.localStorage.getItem('themeMode');
-    if (saved === 'dark' || saved === 'classic' || saved === 'fresh') return saved;
-    return 'classic';
+  if (saved === 'dark' || saved === 'classic' || saved === 'fresh' || saved === 'lavender') return saved;
+  return 'classic';
   };
   const [mode, setMode] = useState(getInitialMode());
 
@@ -23,6 +23,7 @@ function Main() {
   const theme =
     mode === 'dark' ? darkTheme :
     mode === 'fresh' ? freshLight :
+    mode === 'lavender' ? lavenderLight :
     classicLight;
 
   return (
