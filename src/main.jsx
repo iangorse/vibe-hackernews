@@ -4,13 +4,19 @@ import './index.css';
 import App from './App.jsx';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from './theme';
+import getTheme from './theme';
+import { useState } from 'react';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
-  </StrictMode>
-);
+function Main() {
+  const [mode, setMode] = useState('light');
+  return (
+    <StrictMode>
+      <ThemeProvider theme={getTheme(mode)}>
+        <CssBaseline />
+        <App mode={mode} setMode={setMode} />
+      </ThemeProvider>
+    </StrictMode>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<Main />);

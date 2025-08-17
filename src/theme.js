@@ -1,17 +1,17 @@
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
+const getTheme = (mode = 'light') => createTheme({
   palette: {
-    mode: 'light',
+    mode,
     primary: {
-      main: '#ff6600', // Hacker News orange
+      main: '#ff6600',
     },
     secondary: {
       main: '#333',
     },
     background: {
-      default: '#f6f6ef',
-      paper: '#fff',
+      default: mode === 'light' ? '#f6f6ef' : '#121212',
+      paper: mode === 'light' ? '#fff' : '#1e1e1e',
     },
   },
   typography: {
@@ -23,4 +23,4 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+export default getTheme;
