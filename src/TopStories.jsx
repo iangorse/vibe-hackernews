@@ -64,7 +64,7 @@ function TopStories() {
   }, []);
 
   if (loading) return (
-    <Container maxWidth="sm">
+    <Container maxWidth="xl" disableGutters sx={{ px: 0 }}>
       <Typography variant="h6" align="center" sx={{ mt: 4 }}>
         Loading top stories...
       </Typography>
@@ -72,13 +72,13 @@ function TopStories() {
   );
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="xl" disableGutters sx={{ px: 0 }}>
       <Typography variant="h4" align="center" sx={{ mt: 4, mb: 2 }}>
         Hacker News Top Stories
       </Typography>
-      <List>
+      <List sx={{ width: '100%' }}>
         {stories.map(story => (
-          <ListItem key={story.id} divider alignItems="flex-start">
+          <ListItem key={story.id} divider alignItems="flex-start" sx={{ width: '100%' }}>
             <ListItemText
               primary={
                 <Link href={story.url} target="_blank" rel="noopener noreferrer" underline="hover">
@@ -89,7 +89,7 @@ function TopStories() {
                 <>
                   <span>by {story.by}</span>
                   {story.topComment && (
-                    <div style={{ marginTop: 8, padding: 8, background: '#f5f5f5', borderRadius: 4 }}>
+                    <div style={{ marginTop: 8, padding: 8, background: '#f5f5f5', borderRadius: 4, width: '100%' }}>
                       <Typography variant="body2" color="text.secondary">
                         <span dangerouslySetInnerHTML={{ __html: story.topComment.text }} />
                         <br />
@@ -117,17 +117,17 @@ function TopStories() {
                               setExpanded(prev => ({ ...prev }));
                             }
                           }}
-                          sx={{ mt: 2 }}
+                          sx={{ mt: 2, width: '100%' }}
                         >
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ width: '100%' }}>
                             <Typography variant="body2" color="primary">
                               Show {story.kids.length - 1} more comment{story.kids.length - 1 > 1 ? 's' : ''}
                             </Typography>
                           </AccordionSummary>
-                          <AccordionDetails>
+                          <AccordionDetails sx={{ width: '100%' }}>
                             {allCommentsCache[story.id]
                               ? allCommentsCache[story.id].map(comment => (
-                                  <div key={comment.id} style={{ marginBottom: 12, padding: 8, background: '#fafafa', borderRadius: 4 }}>
+                                  <div key={comment.id} style={{ marginBottom: 12, padding: 8, background: '#fafafa', borderRadius: 4, width: '100%' }}>
                                     <Typography variant="body2" color="text.secondary">
                                       <span dangerouslySetInnerHTML={{ __html: comment.text }} />
                                       <br />
