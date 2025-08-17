@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Link from '@mui/material/Link';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
+import StoryList from './components/StoryList';
 
 const HN_TOP_STORIES_URL = 'https://hacker-news.firebaseio.com/v0/topstories.json';
 const HN_ITEM_URL = 'https://hacker-news.firebaseio.com/v0/item';
@@ -73,102 +65,33 @@ function TopStories() {
     </Container>
   );
 
+  // Function to fetch all comments except the top one for a story
+  const fetchComments = async (story) => {
+    const commentIds = story.kids.slice(1);
+    const commentPromises = commentIds.map(async cid => {
+      if (commentCache[cid]) return commentCache[cid];
+      const resp = await fetch(`${HN_ITEM_URL}/${cid}.json`);
+      const data = await resp.json();
+      commentCache[cid] = data;
+      return data;
+    });
+    const comments = await Promise.all(commentPromises);
+    allCommentsCache[story.id] = comments;
+  };
+
   return (
     <Container maxWidth="xl" disableGutters sx={{ px: 0 }}>
       <Typography variant="h4" align="center" sx={{ mt: 4, mb: 2 }}>
         Hacker News Top Stories
       </Typography>
-      <List sx={{ width: '100%' }}>
-        {stories.map(story => (
-          <ListItem key={story.id} divider alignItems="flex-start" sx={{ width: '100%' }}>
-            <ListItemText
-              primary={
-                <Link href={story.url} target="_blank" rel="noopener noreferrer" underline="hover">
-                  {story.title}
-                </Link>
-              }
-              secondary={
-                <>
-                  <span>by {story.by}</span>
-                  {story.topComment && (
-                    <div
-                      style={{
-                        marginTop: 8,
-                        padding: 8,
-                        background: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#f5f5f5',
-                        borderRadius: 4,
-                        width: '100%',
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        <span dangerouslySetInnerHTML={{ __html: story.topComment.text }} />
-                        <br />
-                        <span style={{ fontStyle: 'italic', color: theme.palette.text.secondary }}>— {story.topComment.by}</span>
-                      </Typography>
-                      {/* Dropdown for more comments */}
-                      {story.kids && story.kids.length > 1 && (
-                        <Accordion
-                          expanded={!!expanded[story.id]}
-                          onChange={async () => {
-                            setExpanded(prev => ({ ...prev, [story.id]: !prev[story.id] }));
-                            if (!allCommentsCache[story.id] && !expanded[story.id]) {
-                              // Fetch all comments except the top one
-                              const commentIds = story.kids.slice(1);
-                              const commentPromises = commentIds.map(async cid => {
-                                if (commentCache[cid]) return commentCache[cid];
-                                const resp = await fetch(`${HN_ITEM_URL}/${cid}.json`);
-                                const data = await resp.json();
-                                commentCache[cid] = data;
-                                return data;
-                              });
-                              const comments = await Promise.all(commentPromises);
-                              allCommentsCache[story.id] = comments;
-                              // Force re-render
-                              setExpanded(prev => ({ ...prev }));
-                            }
-                          }}
-                          sx={{ mt: 2, width: '100%' }}
-                        >
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ width: '100%' }}>
-                            <Typography variant="body2" color="primary">
-                              Show {story.kids.length - 1} more comment{story.kids.length - 1 > 1 ? 's' : ''}
-                            </Typography>
-                          </AccordionSummary>
-                          <AccordionDetails sx={{ width: '100%' }}>
-                            {allCommentsCache[story.id]
-                              ? allCommentsCache[story.id].map(comment => (
-                                  <div
-                                    key={comment.id}
-                                    style={{
-                                      marginBottom: 12,
-                                      padding: 8,
-                                      background: theme.palette.mode === 'dark' ? theme.palette.action.hover : '#fafafa',
-                                      borderRadius: 4,
-                                      width: '100%',
-                                      color: theme.palette.text.primary,
-                                    }}
-                                  >
-                                    <Typography variant="body2" color="text.secondary">
-                                      <span dangerouslySetInnerHTML={{ __html: comment.text }} />
-                                      <br />
-                                      <span style={{ fontStyle: 'italic', color: theme.palette.text.secondary }}>— {comment.by}</span>
-                                    </Typography>
-                                  </div>
-                                ))
-                              : <Typography variant="body2">Loading comments...</Typography>
-                            }
-                          </AccordionDetails>
-                        </Accordion>
-                      )}
-                    </div>
-                  )}
-                </>
-              }
-            />
-          </ListItem>
-        ))}
-      </List>
+      <StoryList
+        stories={stories}
+        expanded={expanded}
+        setExpanded={setExpanded}
+        allCommentsCache={allCommentsCache}
+        commentCache={commentCache}
+        fetchComments={fetchComments}
+      />
     </Container>
   );
 }
