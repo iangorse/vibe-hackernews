@@ -8,12 +8,22 @@ import getTheme from './theme';
 import { useState } from 'react';
 
 function Main() {
-  const [mode, setMode] = useState('light');
+  const getInitialMode = () => {
+    const saved = window.localStorage.getItem('themeMode');
+    return saved === 'dark' ? 'dark' : 'light';
+  };
+  const [mode, setMode] = useState(getInitialMode);
+
+  const handleSetMode = (newMode) => {
+    setMode(newMode);
+    window.localStorage.setItem('themeMode', newMode);
+  };
+
   return (
     <StrictMode>
       <ThemeProvider theme={getTheme(mode)}>
         <CssBaseline />
-        <App mode={mode} setMode={setMode} />
+        <App mode={mode} setMode={handleSetMode} />
       </ThemeProvider>
     </StrictMode>
   );
